@@ -1,0 +1,225 @@
+:root {
+  --tc-orange: #ff8a1f;
+  --tc-gold: #d4af37;
+  --tc-forest: #0f3d2e;
+  --tc-sand: #fff6e8;
+
+  --hero-bg: radial-gradient(1200px circle at 20% 0%, rgba(255, 138, 31, 0.22), transparent 55%),
+    radial-gradient(900px circle at 80% 30%, rgba(212, 175, 55, 0.18), transparent 55%),
+    radial-gradient(900px circle at 40% 90%, rgba(15, 61, 46, 0.12), transparent 55%);
+}
+
+body {
+  scroll-behavior: smooth;
+  background-color: var(--tc-sand);
+  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Liberation Sans",
+    sans-serif;
+}
+
+.skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.75rem;
+  z-index: 1000;
+}
+
+.hero {
+  background-image: var(--hero-bg);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+.hero-bg {
+  min-height: 50svh;
+  box-sizing: border-box;
+  padding: 5rem 0;
+  display: flex;
+  align-items: center;
+  background-image: linear-gradient(180deg, rgba(15, 61, 46, 0.82), rgba(15, 61, 46, 0.6)),
+    url("../images/tropicbg.png");
+  background-size: contain;
+  background-position: center bottom;
+  background-repeat: repeat;
+}
+
+.hero-content {
+  position: relative;
+  max-width: 60rem;
+  margin-left: auto;
+  margin-right: auto;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.45);
+}
+
+
+.photo-button {
+  cursor: zoom-in;
+  display: block;
+}
+
+.tropical .navbar.bg-dark {
+  background-color: var(--tc-orange) !important;
+}
+
+.tropical .navbar-brand {
+  color: #fff;
+}
+
+.tropical .navbar .nav-link {
+  color: #fff;
+}
+
+.tropical .navbar .nav-link:hover,
+.tropical .navbar .nav-link:focus {
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.tropical .btn-primary {
+  background-image: linear-gradient(135deg, var(--tc-orange), var(--tc-gold));
+  border: 0;
+}
+
+.tropical .btn-primary:hover {
+  filter: brightness(0.96);
+}
+
+.tropical .card {
+  border-color: rgba(212, 175, 55, 0.22);
+}
+
+.amenity-icon,
+.contact-icon {
+  color: var(--tc-forest);
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.amenity-card {
+  transition: background-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+.amenity-card:hover {
+  background-color: rgba(25, 135, 84, 0.12);
+  transform: translateY(-2px);
+  box-shadow: 0 0.5rem 1.25rem rgba(15, 61, 46, 0.12);
+}
+
+.contact-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 138, 31, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.28);
+}
+
+.tropical .contact-icon {
+  color: var(--tc-forest);
+}
+
+#faq .accordion-button {
+  font-weight: 700;
+}
+
+#faq .accordion-button.collapsed {
+  background-color: #e7ecea;
+  color: var(--tc-forest);
+}
+
+#faq .accordion-button:not(.collapsed) {
+  background-color: var(--tc-orange);
+  color: #fff;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.18);
+}
+
+#faq .accordion-button:focus {
+  box-shadow: none;
+}
+
+#gallery.bg-body-tertiary {
+  background-color: #fff !important;
+}
+
+.tropical #contact {
+  background-color: var(--tc-orange);
+  color: #fff;
+}
+
+.tropical #contact .text-center .text-secondary {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.tropical #contact .card .text-secondary {
+  color: var(--bs-secondary-color) !important;
+}
+
+.tropical #contact .card .text-body {
+  color: var(--bs-body-color) !important;
+}
+
+.tropical #contact .contact-icon {
+  background: rgba(255, 255, 255, 0.38);
+  border-color: rgba(255, 255, 255, 0.55);
+}
+
+.back-to-top {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--tc-orange);
+  color: #fff;
+  box-shadow: 0 0.75rem 1.5rem rgba(15, 61, 46, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  z-index: 1035;
+  text-decoration: none !important;
+}
+
+.back-to-top:hover,
+.back-to-top:focus-visible {
+  color: #fff;
+  background-color: rgba(255, 138, 31, 0.78);
+  box-shadow: 0 0.9rem 1.75rem rgba(15, 61, 46, 0.26);
+}
+
+.back-to-top-symbol {
+  display: inline-block;
+  transform: rotate(-90deg);
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.tropical footer {
+  background-color: var(--tc-orange);
+  color: #fff;
+  border-top-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+.tropical footer .text-secondary,
+.tropical footer .link-secondary {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.tropical footer .link-secondary:hover {
+  color: #fff !important;
+  text-decoration: underline;
+}
+
+.lightboxOverlay {
+  background: rgba(15, 61, 46, 0.9);
+}
+
+.lb-outerContainer {
+  max-width: 96vw;
+}
+
+.lb-image {
+  max-height: 85vh;
+  width: auto !important;
+}
