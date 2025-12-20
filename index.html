@@ -32,12 +32,15 @@
         aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="nav">
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+      <div class="collapse navbar-collapse justify-content-lg-end" id="nav">
+        <ul class="navbar-nav mb-2 mb-lg-0 ms-lg-auto align-items-lg-center gap-lg-2">
           <li class="nav-item"><a class="nav-link" href="#amenities">Amenities</a></li>
           <li class="nav-item"><a class="nav-link" href="#gallery">Gallery</a></li>
           <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
           <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+          <li class="nav-item">
+            <a class="btn btn-booking btn-sm fw-semibold" href="?signin=1&next=booking">Login</a>
+          </li>
         </ul>
       </div>
     </div>
@@ -595,6 +598,37 @@
     </div>
   </footer>
 
+  <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalTitle" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header tc-modal-header">
+          <h2 class="modal-title h5" id="authModalTitle">Sign in</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="authForm" class="vstack gap-3" novalidate>
+            <div>
+              <label for="authEmail" class="form-label">Email</label>
+              <input id="authEmail" name="email" type="email" class="form-control" autocomplete="username" required />
+              <div class="invalid-feedback">Enter a valid email.</div>
+            </div>
+            <div>
+              <label for="authPassword" class="form-label">Password</label>
+              <input id="authPassword" name="password" type="password" class="form-control"
+                autocomplete="current-password" minlength="6" required />
+              <div class="invalid-feedback">Enter a password (min 6 chars).</div>
+            </div>
+            <div id="authAlert" class="alert alert-danger d-none mb-0" role="alert"></div>
+            <div class="d-grid gap-2">
+              <button id="authSignInBtn" type="submit" class="btn btn-primary">Sign in</button>
+            </div>
+            <p class="small text-secondary mb-0">After signing in, you’ll be redirected to Booking.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
     <a class="back-to-top" href="#top" aria-label="Back to top">
       <span class="back-to-top-symbol" aria-hidden="true">&gt;</span>
     </a>
@@ -604,5 +638,8 @@
     crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox-plus-jquery.min.js"></script>
   <script src="assets/js/site.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="assets/js/supabase-config.js"></script>
+  <script src="assets/js/home-auth.js"></script>
 </body>
 </html>

@@ -59,6 +59,12 @@ body {
   background-color: var(--tc-orange) !important;
 }
 
+@media (min-width: 992px) {
+  .tropical .navbar {
+    --bs-navbar-padding-y: 0.45rem;
+  }
+}
+
 .tropical .navbar-brand {
   color: #fff;
 }
@@ -70,6 +76,278 @@ body {
 .tropical .navbar .nav-link:hover,
 .tropical .navbar .nav-link:focus {
   color: rgba(255, 255, 255, 0.86);
+}
+
+.tropical #bookingTabs.nav-tabs {
+  border-bottom: 0;
+}
+
+.tropical #bookingTabs .nav-link {
+  border: 0;
+  background: transparent;
+  color: #000;
+  font-weight: 400;
+}
+
+.tropical #bookingTabs .nav-link:hover,
+.tropical #bookingTabs .nav-link:focus-visible {
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.tropical #bookingTabs .nav-link.active {
+  color: var(--tc-orange);
+  font-weight: 800;
+  border-bottom: 2px solid var(--tc-orange);
+  border-radius: 0;
+}
+
+.tropical .tc-tab-card {
+  background: transparent;
+  border: 0;
+  box-shadow: none !important;
+}
+
+.tropical .tc-tab-card .card-body {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.tc-calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.tc-calendar-weekdays > div {
+  text-align: center;
+}
+
+.tc-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+}
+
+.tc-calendar-cell {
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 0.5rem;
+  min-height: 3.25rem;
+  padding: 0.35rem;
+  background: #fff;
+}
+
+.tc-calendar-empty {
+  background: transparent;
+  border-color: transparent;
+}
+
+.tc-calendar-day {
+  width: 100%;
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tc-calendar-day:hover,
+.tc-calendar-day:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(255, 138, 31, 0.22);
+}
+
+.tc-calendar-daynum {
+  font-weight: 700;
+  line-height: 1;
+  padding-top: 0.15rem;
+}
+
+.tc-calendar-segs {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0 0.25rem 0.25rem;
+}
+
+.tc-calendar-today {
+  border-color: rgba(255, 138, 31, 0.75);
+}
+
+.tc-calendar-label {
+  width: 100%;
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.4rem;
+  color: #fff;
+  margin-top: 0.15rem;
+}
+
+.tc-calendar-day.tc-cal-dynamic {
+  border-color: color-mix(in srgb, var(--tc-cal) 55%, transparent);
+  background: color-mix(in srgb, var(--tc-cal) 12%, transparent);
+}
+
+.tc-calendar-label.tc-cal-dynamic {
+  background: var(--tc-cal);
+}
+
+#calendarMonthLabel {
+  color: var(--tc-orange);
+}
+
+#prevMonthBtn,
+#nextMonthBtn {
+  border-color: var(--tc-orange);
+  color: var(--tc-orange);
+}
+
+#prevMonthBtn:hover,
+#prevMonthBtn:focus-visible,
+#nextMonthBtn:hover,
+#nextMonthBtn:focus-visible {
+  background-color: var(--tc-orange);
+  border-color: var(--tc-orange);
+  color: #fff;
+}
+
+.tc-calendar-weekdays {
+  color: var(--tc-orange);
+  font-weight: 700;
+}
+
+.tc-modal-header {
+  background-image: linear-gradient(135deg, var(--tc-orange), var(--tc-gold));
+  color: #fff;
+}
+
+.tc-modal-header .modal-title {
+  color: inherit;
+}
+
+.tc-modal-header .btn-close {
+  filter: invert(1) grayscale(1);
+}
+
+.tc-res-table thead th {
+  background-color: var(--tc-orange);
+  color: #fff;
+  border-color: rgba(255, 138, 31, 0.35);
+}
+
+.tc-res-table.table-striped > tbody > tr:nth-of-type(odd) > * {
+  --bs-table-bg-type: rgba(255, 138, 31, 0.06);
+}
+
+@media (max-width: 576px) {
+  #calendarMonthLabel {
+    font-size: 0.95rem;
+  }
+
+  #prevMonthBtn,
+  #nextMonthBtn {
+    padding: 0.2rem 0.4rem;
+  }
+
+  .tc-calendar-weekdays {
+    font-size: 0.65rem;
+    gap: 0.15rem;
+  }
+
+  .tc-calendar-grid {
+    gap: 0.2rem;
+  }
+
+  .tc-calendar-cell {
+    min-height: 0;
+    padding: 0.2rem;
+    border-radius: 0.45rem;
+    aspect-ratio: 1 / 1;
+  }
+
+  .tc-calendar-day {
+    justify-content: center;
+  }
+
+  .tc-calendar-daynum {
+    font-size: 0.9rem;
+    padding-top: 0;
+  }
+
+  .tc-calendar-segs,
+  .tc-calendar-label {
+    display: none;
+  }
+
+  .tc-res-table thead {
+    display: none;
+  }
+
+  .tc-res-table,
+  .tc-res-table tbody,
+  .tc-res-table tr,
+  .tc-res-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .tc-res-table tbody tr {
+    border: 1px solid rgba(212, 175, 55, 0.22);
+    border-radius: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.75rem;
+    background: #fff;
+  }
+
+  .tc-res-table tbody td {
+    padding: 0.35rem 0;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    text-align: right;
+  }
+
+  .tc-res-table tbody td::before {
+    content: attr(data-label);
+    text-align: left;
+    font-weight: 700;
+    color: var(--bs-secondary-color);
+  }
+
+  .tc-res-table tbody td[data-label="Actions"] {
+    justify-content: flex-end;
+  }
+
+  .tc-res-table tbody td[data-label="Actions"]::before {
+    content: "";
+  }
+
+  .tc-res-table .btn-group {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .tc-res-table .btn-group > .btn {
+    width: 100%;
+  }
+}
+
+.tropical .btn-booking {
+  background-color: #fff;
+  color: var(--tc-orange);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.tropical .btn-booking:hover,
+.tropical .btn-booking:focus-visible {
+  background-color: rgba(255, 255, 255, 0.92);
+  color: var(--tc-orange);
 }
 
 .tropical .btn-primary {
