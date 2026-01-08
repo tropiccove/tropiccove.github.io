@@ -261,6 +261,30 @@
     }
   };
 
+  const monthKeyFromIsoDate = (isoDate) => {
+    const normalized = normalizeDate(isoDate);
+    if (!normalized) return null;
+    return normalized.slice(0, 7);
+  };
+
+  const monthKeyToDate = (monthKey) => {
+    if (!monthKey || !/^\d{4}-\d{2}$/.test(monthKey)) return null;
+    const [year, month] = monthKey.split("-").map(Number);
+    if (!Number.isFinite(year) || !Number.isFinite(month)) return null;
+    const date = new Date(year, month - 1, 1);
+    if (!Number.isFinite(date.getTime())) return null;
+    return date;
+  };
+
+  const addMonthsToMonthKey = (monthKey, months) => {
+    const date = monthKeyToDate(monthKey);
+    if (!date) return null;
+    const next = new Date(date.getFullYear(), date.getMonth() + months, 1);
+    const yyyy = next.getFullYear();
+    const mm = String(next.getMonth() + 1).padStart(2, "0");
+    return `${yyyy}-${mm}`;
+  };
+
   const hideDateSummary = () => {
     dateSummary.textContent = "";
     dateSummary.classList.add("d-none");
@@ -922,13 +946,13 @@
     totalEl.textContent = formatAmount(totalAmount);
   };
 
-  const buildMonthlySalesForYear = (reservations, year) => {
+  const buildMonthlySalesFromFirstReservation = (reservations) => {
     const buckets = new Map();
+    let firstMonthKey = null;
     for (const reservation of reservations) {
-      const normalized = normalizeDate(reservation.checkInDate);
-      if (!normalized) continue;
-      if (Number(normalized.slice(0, 4)) !== year) continue;
-      const monthKey = normalized.slice(0, 7);
+      const monthKey = monthKeyFromIsoDate(reservation.checkInDate);
+      if (!monthKey) continue;
+      if (!firstMonthKey || monthKey < firstMonthKey) firstMonthKey = monthKey;
       const bucket =
         buckets.get(monthKey) ?? {
           monthKey,
@@ -941,17 +965,25 @@
       }
       buckets.set(monthKey, bucket);
     }
+
+    if (!firstMonthKey) return [];
+
+    const currentMonthKey = monthKeyFromIsoDate(toIsoDateLocal(new Date()));
+    if (!currentMonthKey) return [];
+
     const months = [];
-    for (let month = 1; month <= 12; month += 1) {
-      const key = `${year}-${String(month).padStart(2, "0")}`;
+    for (let cursor = firstMonthKey, guard = 0; guard < 240 && cursor; guard += 1) {
       months.push(
-        buckets.get(key) ?? {
-          monthKey: key,
+        buckets.get(cursor) ?? {
+          monthKey: cursor,
           bookings: 0,
           totalSales: 0,
         },
       );
+      if (cursor === currentMonthKey) break;
+      cursor = addMonthsToMonthKey(cursor, 1);
     }
+
     return months;
   };
 
@@ -965,8 +997,7 @@
       return;
     }
 
-    const currentYear = new Date().getFullYear();
-    const rows = buildMonthlySalesForYear(state.reservations, currentYear);
+    const rows = buildMonthlySalesFromFirstReservation(state.reservations);
     const totalBookings = state.reservations.length;
     const totalSales = state.reservations.reduce(
       (sum, reservation) => sum + (Number.isFinite(reservation.amount) ? reservation.amount : 0),
@@ -1503,8 +1534,13 @@
       const label = count
         ? `<span class="tc-calendar-label tc-cal-dynamic" style="--tc-cal:${escapeHtml(primaryColor ?? "hsl(0 0% 45%)")}">${escapeHtml(primaryLabel)}</span>`
         : "";
-      const dayAmount = active.reduce(
-        (sum, reservation) => sum + (Number.isFinite(reservation.amount) ? reservation.amount : 0),
+    const dayAmount = active.reduce(
+        (sum, reservation) => {
+          if (!Number.isFinite(reservation.amount)) return sum;
+          const nights = nightsBetween(reservation.checkInDate, reservation.checkOutDate);
+          if (!Number.isFinite(nights) || nights <= 0) return sum;
+          return sum + reservation.amount / nights;
+        },
         0,
       );
       const hasAnyAmount = active.some((reservation) => Number.isFinite(reservation.amount));
