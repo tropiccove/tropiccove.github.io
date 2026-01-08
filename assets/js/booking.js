@@ -19,6 +19,7 @@
   const exportBtn = document.getElementById("exportBtn");
   const searchInput = document.getElementById("search");
   const scheduleFilter = document.getElementById("scheduleFilter");
+  const scheduleTotalAmount = document.getElementById("scheduleTotalAmount");
   const calendarGrid = document.getElementById("calendarGrid");
   const calendarMonthLabel = document.getElementById("calendarMonthLabel");
   const prevMonthBtn = document.getElementById("prevMonthBtn");
@@ -39,6 +40,13 @@
   const confirmModalConfirmBtn = document.getElementById("confirmModalConfirmBtn");
   const dateSummary = document.getElementById("dateSummary");
   const detailSummary = document.getElementById("detailSummary");
+  const monthlySalesValue = document.getElementById("monthlySalesValue");
+  const totalSalesValue = document.getElementById("totalSalesValue");
+  const totalBookingsValue = document.getElementById("totalBookingsValue");
+  const monthlySalesTbody = document.getElementById("monthlySalesTbody");
+  const salesEmptyNotice = document.getElementById("salesEmptyNotice");
+  const schedulesTab = document.getElementById("schedulesTab");
+  const salesTab = document.getElementById("salesTab");
 
   if (
     !reservationTbody ||
@@ -238,6 +246,18 @@
       }).format(new Date(`${normalized}T00:00`));
     } catch {
       return normalized;
+    }
+  };
+
+  const formatMonthLabel = (monthKey) => {
+    if (!monthKey || !/^\d{4}-\d{2}$/.test(monthKey)) return String(monthKey ?? "-");
+    const [year, month] = monthKey.split("-").map(Number);
+    if (!Number.isFinite(year) || !Number.isFinite(month)) return String(monthKey);
+    const date = new Date(year, month - 1, 1);
+    try {
+      return new Intl.DateTimeFormat("en-US", { year: "numeric", month: "short" }).format(date);
+    } catch {
+      return monthKey;
     }
   };
 
@@ -831,6 +851,7 @@
               ${escapeHtml(formatSource(r.source))}${guest}
             </div>
             <div class="text-secondary small">${escapeHtml(subtitle)}</div>
+            ${Number.isFinite(r.amount) ? `<div class="text-secondary small">Amount: ${escapeHtml(formatAmount(r.amount))}</div>` : ""}
             <div class="d-flex justify-content-end gap-2 flex-wrap mt-2">
               <button type="button" class="btn btn-sm btn-outline-dark" data-action="view" data-id="${escapeHtml(r.id)}">
                 <i class="bi bi-eye me-1" aria-hidden="true"></i>View
@@ -878,14 +899,118 @@
 
   const matchesScheduleFilter = (reservation) => {
     const todayIso = toIsoDateLocal(new Date());
+    if (state.scheduleFilter === "all") return true;
     if (state.scheduleFilter === "done") return String(reservation.checkOutDate) <= todayIso;
     return String(reservation.checkOutDate) > todayIso;
   };
 
-  const render = () => {
-    const rows = state.reservations
+  const getFilteredReservations = () => {
+    return state.reservations
       .filter(matchesScheduleFilter)
-      .filter((r) => matchesQuery(r, state.query))
+      .filter((r) => matchesQuery(r, state.query));
+  };
+
+  const isTabActive = (tabButton) => Boolean(tabButton && tabButton.classList.contains("active"));
+
+  const updateScheduleTotals = (reservations) => {
+    const totalEl = scheduleTotalAmount ?? document.getElementById("scheduleTotalAmount");
+    if (!totalEl) return;
+    const totalAmount = reservations.reduce(
+      (sum, reservation) => sum + (Number.isFinite(reservation.amount) ? reservation.amount : 0),
+      0,
+    );
+    totalEl.textContent = formatAmount(totalAmount);
+  };
+
+  const buildMonthlySalesForYear = (reservations, year) => {
+    const buckets = new Map();
+    for (const reservation of reservations) {
+      const normalized = normalizeDate(reservation.checkInDate);
+      if (!normalized) continue;
+      if (Number(normalized.slice(0, 4)) !== year) continue;
+      const monthKey = normalized.slice(0, 7);
+      const bucket =
+        buckets.get(monthKey) ?? {
+          monthKey,
+          bookings: 0,
+          totalSales: 0,
+        };
+      bucket.bookings += 1;
+      if (Number.isFinite(reservation.amount)) {
+        bucket.totalSales += reservation.amount;
+      }
+      buckets.set(monthKey, bucket);
+    }
+    const months = [];
+    for (let month = 1; month <= 12; month += 1) {
+      const key = `${year}-${String(month).padStart(2, "0")}`;
+      months.push(
+        buckets.get(key) ?? {
+          monthKey: key,
+          bookings: 0,
+          totalSales: 0,
+        },
+      );
+    }
+    return months;
+  };
+
+  const renderSales = () => {
+    if (
+      !monthlySalesValue ||
+      !totalSalesValue ||
+      !totalBookingsValue ||
+      !monthlySalesTbody
+    ) {
+      return;
+    }
+
+    const currentYear = new Date().getFullYear();
+    const rows = buildMonthlySalesForYear(state.reservations, currentYear);
+    const totalBookings = state.reservations.length;
+    const totalSales = state.reservations.reduce(
+      (sum, reservation) => sum + (Number.isFinite(reservation.amount) ? reservation.amount : 0),
+      0,
+    );
+
+    const currentMonthKey = toIsoDateLocal(new Date()).slice(0, 7);
+    const currentMonth = rows.find((row) => row.monthKey === currentMonthKey);
+    const currentMonthSales = currentMonth ? currentMonth.totalSales : null;
+
+    const hasSales = totalBookings > 0;
+    salesEmptyNotice?.classList?.toggle?.("d-none", hasSales);
+    monthlySalesValue.textContent = hasSales && currentMonthSales != null ? formatAmount(currentMonthSales) : "-";
+    totalSalesValue.textContent = hasSales ? formatAmount(totalSales) : "-";
+    totalBookingsValue.textContent = hasSales ? String(totalBookings) : "0";
+
+    monthlySalesTbody.innerHTML =
+      rows
+        .map((row) => {
+          return `
+            <tr>
+              <td>${escapeHtml(formatMonthLabel(row.monthKey))}</td>
+              <td>${escapeHtml(String(row.bookings))}</td>
+              <td>${escapeHtml(formatAmount(row.totalSales))}</td>
+            </tr>
+          `;
+        })
+        .join("") ||
+      `<tr><td colspan="3" class="text-secondary">No sales yet.</td></tr>`;
+  };
+
+  const render = () => {
+    const filtered = getFilteredReservations();
+    const sorted = state.scheduleFilter === "all"
+      ? filtered
+          .slice()
+          .sort((a, b) => {
+            const aStart = String(a.checkInDate ?? "");
+            const bStart = String(b.checkInDate ?? "");
+            if (aStart !== bStart) return bStart.localeCompare(aStart);
+            return String(b.id ?? "").localeCompare(String(a.id ?? ""));
+          })
+      : filtered;
+    const rows = sorted
       .map((r) => {
         const statusShort = r.status === "reserved" ? "R" : "P";
         return `
@@ -921,6 +1046,9 @@
     reservationTbody.innerHTML =
       rows ||
       `<tr><td colspan="6" class="text-secondary">No reservations yet.</td></tr>`;
+
+    updateScheduleTotals(filtered);
+    renderSales();
   };
 
   const overlapsExisting = ({ checkInMs, checkOutMs, ignoreId }) => {
@@ -1301,6 +1429,14 @@
     render();
   });
 
+  schedulesTab?.addEventListener("shown.bs.tab", () => {
+    updateScheduleTotals(getFilteredReservations());
+  });
+
+  salesTab?.addEventListener("shown.bs.tab", () => {
+    renderSales();
+  });
+
   const checkInDateInput = document.getElementById("checkInDate");
   const checkOutDateInput = document.getElementById("checkOutDate");
   const onDatesChanged = () => {
@@ -1367,7 +1503,15 @@
       const label = count
         ? `<span class="tc-calendar-label tc-cal-dynamic" style="--tc-cal:${escapeHtml(primaryColor ?? "hsl(0 0% 45%)")}">${escapeHtml(primaryLabel)}</span>`
         : "";
-      const footer = count ? `<div class="tc-calendar-segs">${label}</div>` : "";
+      const dayAmount = active.reduce(
+        (sum, reservation) => sum + (Number.isFinite(reservation.amount) ? reservation.amount : 0),
+        0,
+      );
+      const hasAnyAmount = active.some((reservation) => Number.isFinite(reservation.amount));
+      const amountLabel = count
+        ? `<span class="tc-calendar-amount">${escapeHtml(hasAnyAmount ? formatAmount(dayAmount) : "-")}</span>`
+        : "";
+      const footer = count ? `<div class="tc-calendar-segs">${label}${amountLabel}</div>` : "";
       cells.push(`
         <button type="button"
           class="tc-calendar-cell tc-calendar-day ${isToday ? "tc-calendar-today" : ""} ${count ? "tc-cal-dynamic" : ""}"

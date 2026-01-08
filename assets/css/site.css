@@ -196,6 +196,17 @@ body {
   background: var(--tc-cal);
 }
 
+.tc-calendar-amount {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #344a3a;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 #calendarMonthLabel {
   color: var(--tc-orange);
 }
@@ -270,7 +281,7 @@ body {
   }
 
   .tc-calendar-day {
-    justify-content: center;
+    justify-content: space-between;
   }
 
   .tc-calendar-daynum {
@@ -278,9 +289,17 @@ body {
     padding-top: 0;
   }
 
-  .tc-calendar-segs,
   .tc-calendar-label {
     display: none;
+  }
+
+  .tc-calendar-segs {
+    display: flex;
+    padding-bottom: 0;
+  }
+
+  .tc-calendar-amount {
+    font-size: 0.55rem;
   }
 
   .tc-res-table thead {
@@ -325,6 +344,44 @@ body {
 
   .tc-res-table tbody td[data-label="Actions"]::before {
     content: "";
+  }
+
+  .tc-res-table tfoot {
+    display: block;
+    width: 100%;
+  }
+
+  .tc-res-table tfoot tr {
+    display: block;
+    border: 1px solid rgba(212, 175, 55, 0.22);
+    border-radius: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    background: #fff;
+  }
+
+  .tc-res-table tfoot td {
+    padding: 0.35rem 0;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    text-align: right;
+    width: 100%;
+  }
+
+  .tc-res-table tfoot td::before {
+    content: attr(data-label);
+    text-align: left;
+    font-weight: 700;
+    color: var(--bs-secondary-color);
+  }
+
+  .tc-res-table tfoot .tc-res-total-label {
+    display: none;
+  }
+
+  .tc-res-table tfoot .tc-res-total-actions {
+    display: none;
   }
 
   .tc-res-table .btn-group {

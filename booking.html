@@ -82,6 +82,12 @@
               Schedules
             </button>
           </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="salesTab" data-bs-toggle="tab" data-bs-target="#salesPane" type="button"
+              role="tab" aria-controls="salesPane" aria-selected="false">
+              Sales
+            </button>
+          </li>
         </ul>
 
         <div class="d-flex flex-wrap gap-2 ms-auto">
@@ -140,6 +146,7 @@
                 <div class="d-flex align-items-center gap-2">
                   <label class="text-secondary small" for="scheduleFilter">Filter</label>
                   <select id="scheduleFilter" class="form-select form-select-sm" style="max-width: 10rem">
+                    <option value="all">All</option>
                     <option value="upcoming" selected>Upcoming</option>
                     <option value="done">Done</option>
                   </select>
@@ -165,12 +172,71 @@
                       <td colspan="6" class="text-secondary">No reservations yet.</td>
                     </tr>
                   </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="4" class="text-end fw-semibold tc-res-total-label">Total amount</td>
+                      <td id="scheduleTotalAmount" class="fw-semibold text-end" data-label="Total amount">-</td>
+                      <td class="tc-res-total-actions" aria-hidden="true"></td>
+                    </tr>
+                  </tfoot>
                 </table>
               </div>
               <p class="small text-secondary mb-0 mt-3">
                 Tip: After exporting, you can commit the downloaded CSV into your repo to share the same schedule
                 across devices.
               </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane fade" id="salesPane" role="tabpanel" aria-labelledby="salesTab" tabindex="0">
+            <div class="card shadow-sm tc-tab-card">
+            <div class="card-body">
+              <div id="salesEmptyNotice" class="alert alert-warning d-none" role="status">
+                No data found on the sales dashboard.
+              </div>
+              <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                <div>
+                  <h2 class="h5 fw-semibold mb-1">Monthly sales</h2>
+                  <p class="text-secondary small mb-0">Totals are based on booking amounts.</p>
+                </div>
+              </div>
+              <div class="row g-3 mb-4">
+                <div class="col-12 col-md-6 col-lg-3">
+                  <div class="border rounded-4 p-3 bg-white h-100">
+                    <p class="text-secondary small mb-1">Monthly Sales (This Month)</p>
+                    <div id="monthlySalesValue" class="h5 fw-semibold mb-0">-</div>
+                  </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                  <div class="border rounded-4 p-3 bg-white h-100">
+                    <p class="text-secondary small mb-1">Total Sales</p>
+                    <div id="totalSalesValue" class="h5 fw-semibold mb-0">-</div>
+                  </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                  <div class="border rounded-4 p-3 bg-white h-100">
+                    <p class="text-secondary small mb-1">Number of Bookings</p>
+                    <div id="totalBookingsValue" class="h5 fw-semibold mb-0">-</div>
+                  </div>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th scope="col">Month</th>
+                      <th scope="col">Bookings</th>
+                      <th scope="col">Total Sales</th>
+                    </tr>
+                  </thead>
+                  <tbody id="monthlySalesTbody">
+                    <tr>
+                      <td colspan="3" class="text-secondary">No sales yet.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
